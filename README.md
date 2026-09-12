@@ -18,15 +18,15 @@ This repository implements the complete end-to-end technical pipeline architectu
 ---
 
 ## 🛠️ Tech Stack & Technology Principles
-- **Language:** Python 3.11+ / 3.12
+- **Language:** Python 3.11+ / 3.12 (Tested on Python 3.12.5)
 - **Async Framework:** `asyncio`
 - **Crawlers:** `httpx` (async HTTP) + `Playwright Async` (SPA headless browser fallback)
 - **Validation:** `pydantic-settings` + `jsonschema` (Draft-07)
-- **LLM Provider Chain:** 3-Tier Fallback (**Gemini 2.5 Flash $\rightarrow$ Groq compound $\rightarrow$ DeepSeek**) with 413 payload chunking & 429 jitter backoff
+- **LLM Provider Chain:** 3-Tier Fallback (**Gemini 2.5 Flash** `LIVE VERIFIED` $\rightarrow$ **Groq compound** `LIVE VERIFIED` $\rightarrow$ **DeepSeek** `CONFIGURED / NOT LIVE VERIFIED`) with 413 payload chunking & 429 jitter backoff
 - **Entity Resolution:** Deterministic multi-stage normalization (Unicode NFKC, legal suffix removal, seed dictionary, composite evidence matching)
 - **Storage Strategy:**
-  - **IMPLEMENTED (Demo/Local):** SQLite (`pipeline.db`) via `aiosqlite` with atomic upsert primitives and local raw staging (`data/raw/`).
-  - **DESIGNED (Production Scale):** Managed PostgreSQL, pgvector / Qdrant, Neo4j property graph, and AWS S3 object storage.
+  - **IMPLEMENTED (Demo/Local):** SQLite (`pipeline.db`) via `aiosqlite` with atomic upsert primitives and local raw staging (`./data/raw/`).
+  - **DESIGNED FOR PRODUCTION (Not Deployed):** Managed PostgreSQL, pgvector / Qdrant, Neo4j property graph, and AWS S3 object storage.
   - **OPTIONAL / PLANNED:** Redis Sentinel/Cluster for distributed rate limiting and atomic claim locking.
 - **Primary Queue:** **Apache Kafka** (DESIGNED production queue for partition-level ordering, replayable logs, and backpressure).
 
@@ -56,7 +56,7 @@ src/
 │   │   ├── base.py         # Abstract LLM provider interface
 │   │   ├── gemini.py       # Gemini 2.5 Flash adapter (Tier 1 - LIVE VERIFIED)
 │   │   ├── groq.py         # Groq compound adapter (Tier 2 - LIVE VERIFIED)
-│   │   └── deepseek.py     # DeepSeek adapter (Tier 3 - NOT LIVE VERIFIED)
+│   │   └── deepseek.py     # DeepSeek adapter (Tier 3 - CONFIGURED / NOT LIVE VERIFIED)
 │   ├── chunker.py          # 413 Context window payload chunker & HTML cleaner
 │   ├── retry.py            # Exponential backoff retries helper
 │   └── orchestrator.py     # Multi-tier fallback orchestrator
@@ -76,58 +76,154 @@ src/
     ├── hashing.py          # URL canonicalization & hashing
     └── time.py             # ISO-8601 formatting & relative date parsing
 
+scripts/
+└── export_sheets.py        # Data exporter for 6 canonical tabs (CSV/JSON & Sheets)
+
 docs/                       # Architecture & design specifications
 schemas/                    # Canonical JSON Schemas (6 schemas)
 tests/                      # Unit & Integration test suite
 main.py                     # E2E Vertical Slice CLI entrypoint
+.env.example                # Environment configuration template (Source of truth for env vars)
 ```
 
 ---
 
-## 🚀 Quick Start Guide
+## 🚀 Quick Start Guide & Setup Instructions
 
-### 1. Environment Setup
-```bash
-# Create virtual environment
+### 1. Prerequisites
+- **Python:** Python 3.11+ or 3.12 (Python 3.12 recommended).
+- **Virtual Environment:** Recommended to prevent global package conflicts.
+- **Headless Browser:** Playwright Chromium binaries (required for JavaScript dynamic SPA crawling).
+
+#### Environment Creation & Dependencies Installation
+```powershell
+# Windows (PowerShell)
 python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+.\.venv\Scripts\Activate.ps1
 
-# Install dependencies
+# Upgrade pip and install repository dependencies
 pip install -r requirements.txt
+
+# Install Playwright browser binaries
+playwright install chromium
 ```
 
-### 2. Configure Environment Variables
-Copy `.env.example` to `.env`:
 ```bash
+# Linux / macOS (Bash / Zsh)
+python3 -m venv .venv
+source .venv/bin/activate
+
+pip install -r requirements.txt
+playwright install chromium
+```
+
+---
+
+### 2. Environment Configuration
+
+Copy `.env.example` to create your local `.env` configuration file:
+
+```powershell
+# Windows (PowerShell / CMD)
+copy .env.example .env
+```
+
+```bash
+# Linux / macOS
 cp .env.example .env
 ```
-Key settings in `.env`:
-- `GEMINI_API_KEY`: API key for Gemini 2.5 Flash (Tier 1 Primary).
-- `GROQ_API_KEY`: API key for Groq compound (Tier 2 Secondary).
-- `DEEPSEEK_API_KEY`: API key for DeepSeek (Tier 3 Tertiary).
-- `DATABASE_URL`: `sqlite+aiosqlite:///./pipeline.db` (default).
 
-*(Note: If LLM API keys are unconfigured, the pipeline operates with deterministic rule-based extractions and graceful fallbacks).*
+> [!IMPORTANT]
+> **Security Rules:**
+> - Fill only the credentials and configuration variables required for your environment.
+> - **NEVER commit `.env`** to source control (enforced via `.gitignore`).
+> - **NEVER commit Google Cloud Service Account JSON credentials** (`credentials.json`).
+> - `.env.example` is the source of truth for configuration keys and must only contain safe, placeholder values.
 
 ---
 
-## 🧪 Running the Pipeline & Verification
+### 3. Environment Variable Reference
 
-### Run Vertical Slice Execution
-```bash
+The pipeline relies on `pydantic-settings` to load configuration from environment variables or `.env`. Below is the complete reference table corresponding 1-to-1 with [`.env.example`](file:///c:/Users/hp/OneDrive/Documents/Desktop/graphone-ingestion-pipeline/.env.example):
+
+| Variable | Required? | Purpose | Example / Allowed Value |
+|----------|-----------|---------|-------------------------|
+| `ENVIRONMENT` | No | Target runtime environment mode (`development`, `staging`, `production`) | `development` |
+| `LOG_LEVEL` | No | Log output verbosity for structured JSON logger (`DEBUG`, `INFO`, `WARNING`, `ERROR`) | `INFO` |
+| `DATABASE_URL` | No | Relational database connection URI (SQLite via `aiosqlite` default) | `sqlite+aiosqlite:///./pipeline.db` |
+| `RAW_STORAGE_DIR` | No | Local filesystem directory path for raw HTML/JSON payload staging | `./data/raw` |
+| `MAX_RECORDS` | No | Record count limit per bulk extraction processing pass | `10` |
+| `BULK_BATCH_SIZE` | No | Database batch transaction size and checkpoint interval | `50` |
+| `CRAWL_CONCURRENCY` | No | Maximum number of concurrent async crawler tasks/workers | `5` |
+| `RATE_LIMIT_PER_SECOND` | No | Global HTTP rate limit per target domain (requests/sec) | `2.0` |
+| `LLM_PRIMARY_PROVIDER` | No | Tier 1 Primary LLM provider adapter name | `GeminiFlash` |
+| `LLM_PRIMARY_MODEL` | No | Primary LLM model identifier (**LIVE VERIFIED**) | `gemini-2.5-flash` |
+| `LLM_SECONDARY_PROVIDER` | No | Tier 2 Secondary LLM provider adapter name | `GroqLlama` |
+| `LLM_SECONDARY_MODEL` | No | Secondary LLM model identifier (**LIVE VERIFIED**) | `groq/compound` |
+| `LLM_TERTIARY_PROVIDER` | No | Tier 3 Tertiary LLM provider adapter name | `DeepSeek` |
+| `LLM_TERTIARY_MODEL` | No | Tertiary LLM model identifier (**CONFIGURED / NOT LIVE VERIFIED**) | `deepseek-chat` |
+| `GEMINI_API_KEY` | Optional | API key for Google Gemini (Tier 1 Primary). If unconfigured, falls back to DOM/API parsing. | `your_gemini_api_key_here` |
+| `GROQ_API_KEY` | Optional | API key for Groq (Tier 2 Secondary). If unconfigured, falls back to DOM/API parsing. | `your_groq_api_key_here` |
+| `DEEPSEEK_API_KEY` | Optional | API key for DeepSeek (Tier 3 Tertiary). If unconfigured, falls back to DOM/API parsing. | `your_deepseek_api_key_here` |
+| `GITHUB_TOKEN` | Optional | GitHub Personal Access Token for authentic repository star count fetching without rate limits. | `your_github_token_here` |
+| `GOOGLE_SHEETS_CREDENTIALS` | Optional | Relative file path to Google Cloud Service Account JSON credentials for export publishing. | `./credentials/google_service_account.json` |
+| `GOOGLE_SHEET_ID` | Optional | Target Google Sheet ID string from spreadsheet URL for automated publishing. | `your_google_sheet_id_here` |
+
+*(Note: If LLM API keys are unconfigured, the pipeline operates deterministically using rule-based DOM/API parsing and graceful fallbacks).*
+
+---
+
+### 4. Google Sheets Export & Publishing Integration
+
+Google Sheets serves as an **export and publishing integration layer** for delivering cleaned canonical datasets to stakeholders. It is **not** used as a primary application database or runtime storage engine.
+
+#### Configuration & Service Account Setup
+1. **Credentials File Path:** Set `GOOGLE_SHEETS_CREDENTIALS` in `.env` to the path of your Google Cloud Service Account key file (e.g. `credentials/google_service_account.json`). Do not commit this file to git.
+2. **Spreadsheet Access:** Open your target Google Sheet in a browser and share it with the service account's `client_email` (found inside your JSON key file), granting **Editor** permissions.
+3. **Spreadsheet ID:** Copy the unique ID string from the spreadsheet URL (`https://docs.google.com/spreadsheets/d/<GOOGLE_SHEET_ID>/edit`) and set `GOOGLE_SHEET_ID` in `.env`.
+
+#### Export & Dry-Run Execution
+The exporter script [`scripts/export_sheets.py`](file:///c:/Users/hp/OneDrive/Documents/Desktop/graphone-ingestion-pipeline/scripts/export_sheets.py) dumps canonical database entities into clean CSV, JSON, and JSONL formats inside `data/exports/`:
+
+```powershell
+# Export all 6 canonical tabs to local CSV/JSON files (Dry-Run / Local Verification)
+python scripts/export_sheets.py
+
+# Export startups tab only
+python scripts/export_sheets.py --startups-only
+```
+
+#### Verification of Published Tabs
+The exporter produces files corresponding to the 6 canonical Google Sheets deliverable tabs:
+1. `Startups` (`data/exports/startups.csv`)
+2. `Products` (`data/exports/products.csv`)
+3. `Research Papers` (`data/exports/research_papers.csv`, `research_papers.json`, `research_papers.jsonl`)
+4. `Jobs` (`data/exports/jobs.csv` - strictly 24-hour fresh postings)
+5. `News` (`data/exports/news.csv` - strictly 24-hour fresh articles)
+6. `Entity Mapping Log` (`data/exports/entity_mappings.csv` - raw vs canonical mapping audit trail)
+
+---
+
+## 🧪 Running the Pipeline & Verification Commands
+
+### Environment Verification & Full Test Suite
+Run the automated test suite across unit and integration specs:
+```powershell
+python -m pytest tests/ -v --tb=short
+```
+*Current test suite result: **123 passed, 1 skipped, 3 warnings in ~36s** (`pytest tests/`).*
+
+### Run Vertical Slice Execution CLI
+Executes end-to-end crawling, extraction, entity resolution, and SQLite storage for a single vertical slice:
+```powershell
 python main.py
 ```
 
 ### Run Batch Ingestion (ArXiv / News)
-```bash
+Executes asynchronous batch ingestion for arXiv papers and fresh AI news feeds:
+```powershell
 python -m src.pipeline.batch_processor
 ```
-
-### Run Full Test Suite
-```bash
-pytest tests/unit/ -q
-```
-*Current unit test suite passing: 117 passed, 0 failed, 2 warnings in ~22s (Exit Code 0).*
 
 ---
 
@@ -152,20 +248,19 @@ pytest tests/unit/ -q
   - *Clearly Qualifies:* TechCrunch AI, MIT Technology Review AI, OpenAI Blog
   - *Borderline:* Hugging Face Daily Papers, Hacker News AI
   - *OpenAI Blog Note:* RSS feed accessible; article detail GET encounters Cloudflare HTTP 403 (no anti-bot bypass mechanisms used).
-  - *Requirement Status:* **PARTIAL** under strict interpretation of 5 dedicated AI news sources.
+  - *Requirement Status:* **PARTIAL PASS** under strict interpretation of 5 dedicated AI news sources.
 - **Entity Mappings (865 records exported):** Deterministic canonical resolution log with seed dictionary and confidence thresholds.
 
-### 2. Multi-Tier LLM Orchestration
-- **Tier 1:** Gemini 2.5 Flash (**LIVE VERIFIED**)
-- **Tier 2:** Groq Llama 3.3 70B (**LIVE VERIFIED**)
-- **Tier 3:** DeepSeek (**CONFIGURED / NOT LIVE VERIFIED**)
+### 2. Multi-Tier LLM Orchestration & Provider Verification
+- **Tier 1:** Gemini 2.5 Flash (`gemini-2.5-flash`) — **LIVE VERIFIED**
+- **Tier 2:** Groq compound (`groq/compound`) — **LIVE VERIFIED**
+- **Tier 3:** DeepSeek (`deepseek-chat`) — **CONFIGURED / NOT LIVE VERIFIED**
 - HTTP 413 context window structural chunking and HTTP 429 full-jitter exponential backoff implemented and verified. Zero synthetic fallback data.
 
 ### 3. Architecture & Infrastructure Classification
-- **IMPLEMENTED / DEMO (Local Workspace):** SQLite (`pipeline.db`), local filesystem raw payload storage (`data/raw/`), async HTTP/Playwright crawler engine, LLM orchestrator, deterministic entity resolver.
-- **DESIGNED FOR PRODUCTION SCALE:** Managed PostgreSQL, **Apache Kafka** (PRIMARY event stream & queue architecture), Redis supporting infrastructure, pgvector / Qdrant vector storage, Neo4j property graph, AWS S3 / MinIO object storage, Kubernetes container deployment.
+- **IMPLEMENTED (Local Workspace / Demo):** SQLite (`pipeline.db`), local filesystem raw payload storage (`./data/raw/`), async HTTP/Playwright crawler engine, LLM orchestrator, deterministic entity resolver.
+- **DESIGNED FOR PRODUCTION SCALE (Not Deployed):** Managed PostgreSQL, **Apache Kafka** (PRIMARY event stream & queue architecture), Redis supporting infrastructure, pgvector / Qdrant vector storage, Neo4j property graph, AWS S3 / MinIO object storage, Kubernetes container deployment.
 - **Capacity Model:** All 500,000+ records/day throughput figures are explicitly designated as **ASSUMPTIONS / DESIGN CAPACITY** (theoretical capacity model, not measured production throughput).
 
-### 4. Unit Test Suite
-- **117 passed, 0 failed, 0 skipped, 2 warnings in ~22s** (`pytest tests/unit/`).
-
+### 4. Automated Test Suite Status
+- **123 passed, 1 skipped, 3 warnings in ~36s** (`pytest tests/`).
