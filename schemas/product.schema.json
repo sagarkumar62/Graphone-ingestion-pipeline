@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ProductEntity",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "recordType",
+    "source",
+    "content",
+    "collectedAt"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "enum": ["1.0"]
+    },
+    "recordType": {
+      "type": "string",
+      "const": "PRODUCT"
+    },
+    "source": {
+      "type": "object",
+      "required": ["name", "url"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "content": {
+      "type": "object",
+      "required": ["productName", "startupName", "pricingModel"],
+      "additionalProperties": false,
+      "properties": {
+        "productName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "startupName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pricingModel": {
+          "type": "string",
+          "enum": ["FREE", "FREEMIUM", "PAID", "ENTERPRISE", "UNKNOWN"]
+        },
+        "description": {
+          "type": ["string", "null"]
+        },
+        "category": {
+          "type": ["string", "null"]
+        },
+        "launchDate": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        }
+      }
+    },
+    "collectedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

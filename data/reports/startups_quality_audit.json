@@ -1,0 +1,29 @@
+{
+  "timestamp": "2026-09-12T02:58:44.917596Z",
+  "total_startup_rows": 1134,
+  "production_startup_rows": 1134,
+  "rejected_startup_candidates": 0,
+  "yc_records": 1,
+  "github_company_records": 1133,
+  "evidence_breakdown": {
+    "strong_evidence": 809,
+    "moderate_evidence": 325,
+    "rejected_for_insufficient_evidence": 0
+  },
+  "provenance": {
+    "missing_source_urls": 0,
+    "invalid_source_urls": 0,
+    "duplicate_source_urls": 0
+  },
+  "yc_discrepancy": {
+    "previous_reported_record": "Stripe (https://www.ycombinator.com/companies/stripe) cited in early Phase 1 doc",
+    "current_verified_record": "OpenAI (https://ycombinator.com/companies/openai)",
+    "explanation": "OpenAI is row ID 1 in pipeline.db startups table under YC Directory. Stripe exists under row ID 439 as a GitHub Organization."
+  },
+  "quality": {
+    "fabricated_records": 0,
+    "synthetic_records": 0,
+    "unsupported_classifications": 0
+  },
+  "requirement_status": "PASS"
+}

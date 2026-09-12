@@ -1,0 +1,37 @@
+{
+  "timestamp": "2026-09-11T18:33:12.936593Z",
+  "identity_quality": {
+    "total_job_rows": 1275,
+    "total_production_records": 1275,
+    "test_legacy_records_excluded": 0,
+    "unique_source_urls": 1275,
+    "duplicate_source_urls": 0,
+    "missing_source_urls": 0,
+    "invalid_source_url_formats": 0
+  },
+  "metadata_completeness": {
+    "missing_company_name": 0,
+    "missing_published_date": 0,
+    "remote_job_count": 422,
+    "onsite_job_count": 853,
+    "role_family_breakdown": {
+      "Engineering": 665,
+      "Product": 75,
+      "Management": 205,
+      "AI/ML": 127,
+      "Design": 60,
+      "Data Science": 143
+    },
+    "job_titles_populated": 1275,
+    "locations_populated": 1274,
+    "descriptions_populated": 1274
+  },
+  "source_breakdown": {
+    "AI Job Board": 1,
+    "RemoteOKAI": 99,
+    "Arbeitnow": 589,
+    "HNWhoIsHiring": 461,
+    "Jobicy": 100,
+    "WeWorkRemotelyAI": 25
+  }
+}

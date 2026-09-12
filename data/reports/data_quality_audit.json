@@ -1,0 +1,46 @@
+{
+  "timestamp": "2026-09-11T17:41:15.497580Z",
+  "identity_quality": {
+    "total_production_records": 1007,
+    "test_legacy_records_excluded": 76,
+    "unique_source_urls": 1007,
+    "duplicate_source_urls": 0,
+    "missing_source_urls": 0,
+    "invalid_source_url_formats": 0
+  },
+  "metadata_completeness": {
+    "missing_title": 0,
+    "empty_title": 0,
+    "missing_authors": 0,
+    "empty_authors": 0,
+    "missing_publication_date": 0,
+    "invalid_publication_date": 0,
+    "future_publication_date": 0,
+    "missing_source_name": 0
+  },
+  "content_quality": {
+    "total_abstracts_analyzed": 1007,
+    "missing_abstract": 0,
+    "empty_abstract": 0,
+    "extremely_short_abstract": 0,
+    "extremely_long_abstract": 0,
+    "html_xml_leakage": 2,
+    "encoding_problems": 0
+  },
+  "github_enrichment": {
+    "github_url_count": 159,
+    "valid_github_urls": 159,
+    "github_stars_populated": 130,
+    "invalid_star_values": 0,
+    "negative_star_values": 0
+  },
+  "provenance": {
+    "arxiv_source_count": 1006,
+    "non_arxiv_production_records": 1
+  },
+  "duplicate_detection": {
+    "duplicate_source_urls": 0,
+    "duplicate_normalized_titles": 1,
+    "duplicate_title_and_published_dates": 0
+  }
+}

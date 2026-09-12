@@ -1,0 +1,54 @@
+{
+  "timestamp": "2026-09-11T17:07:56.738275Z",
+  "total_eval_queries": 5,
+  "mean_mrr": 0.9,
+  "mean_precision_at_5": 0.84,
+  "mean_recall_proxy_at_10": 1.0,
+  "query_details": [
+    {
+      "query": "code generation",
+      "category": "cs.AI",
+      "returned_matches": 10,
+      "total_matches": 99,
+      "reciprocal_rank": 1.0,
+      "precision_at_5": 1.0,
+      "execution_time_ms": 4807.35
+    },
+    {
+      "query": "retrieval augmented generation",
+      "category": null,
+      "returned_matches": 10,
+      "total_matches": 76,
+      "reciprocal_rank": 1.0,
+      "precision_at_5": 0.8,
+      "execution_time_ms": 2151.66
+    },
+    {
+      "query": "reasoning large language models",
+      "category": "cs.AI",
+      "returned_matches": 10,
+      "total_matches": 99,
+      "reciprocal_rank": 1.0,
+      "precision_at_5": 1.0,
+      "execution_time_ms": 1223.48
+    },
+    {
+      "query": "vision language multi modal",
+      "category": null,
+      "returned_matches": 10,
+      "total_matches": 53,
+      "reciprocal_rank": 0.5,
+      "precision_at_5": 0.6,
+      "execution_time_ms": 1066.72
+    },
+    {
+      "query": "benchmark evaluation dataset",
+      "category": null,
+      "returned_matches": 10,
+      "total_matches": 62,
+      "reciprocal_rank": 1.0,
+      "precision_at_5": 0.8,
+      "execution_time_ms": 1177.36
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "timestamp": "2026-09-11T18:38:34Z",
+  "dataset_summary": {
+    "total_job_rows": 1275,
+    "test_legacy_rows": 0,
+    "production_rows": 1275,
+    "production_fresh_rows": 683,
+    "production_stale_rows": 592,
+    "unknown_date_rows": 0,
+    "total_rejected_rows": 592,
+    "submission_ready_fresh_jobs": 683
+  },
+  "provenance_and_identity": {
+    "unique_source_urls": 1275,
+    "duplicate_source_urls": 0,
+    "missing_source_urls": 0,
+    "fabricated_records": 0,
+    "synthetic_records": 0
+  },
+  "date_range": {
+    "earliest_accepted_posting": "2026-09-10T19:32:38Z",
+    "latest_accepted_posting": "2026-09-11T18:31:45Z",
+    "crawl_timestamp": "2026-09-11T18:38:34Z"
+  },
+  "source_breakdown": {
+    "AI Job Board": {
+      "total": 1,
+      "fresh": 0,
+      "stale": 1,
+      "unknown": 0,
+      "rejected": 1
+    },
+    "RemoteOKAI": {
+      "total": 99,
+      "fresh": 0,
+      "stale": 99,
+      "unknown": 0,
+      "rejected": 99
+    },
+    "Arbeitnow": {
+      "total": 589,
+      "fresh": 589,
+      "stale": 0,
+      "unknown": 0,
+      "rejected": 0
+    },
+    "HNWhoIsHiring": {
+      "total": 461,
+      "fresh": 0,
+      "stale": 461,
+      "unknown": 0,
+      "rejected": 461
+    },
+    "Jobicy": {
+      "total": 100,
+      "fresh": 94,
+      "stale": 6,
+      "unknown": 0,
+      "rejected": 6
+    },
+    "WeWorkRemotelyAI": {
+      "total": 25,
+      "fresh": 0,
+      "stale": 25,
+      "unknown": 0,
+      "rejected": 25
+    }
+  }
+}

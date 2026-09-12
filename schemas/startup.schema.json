@@ -1,0 +1,92 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "StartupEntity",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "recordType",
+    "source",
+    "content",
+    "collectedAt"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "enum": ["1.0"]
+    },
+    "recordType": {
+      "type": "string",
+      "const": "STARTUP"
+    },
+    "source": {
+      "type": "object",
+      "required": ["name", "url"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "content": {
+      "type": "object",
+      "required": ["entityName", "data"],
+      "additionalProperties": false,
+      "properties": {
+        "entityName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": ["string", "null"]
+        },
+        "website": {
+          "type": ["string", "null"],
+          "format": "uri"
+        },
+        "foundingYear": {
+          "type": ["integer", "null"],
+          "minimum": 1900,
+          "maximum": 2100
+        },
+        "hqLocation": {
+          "type": ["string", "null"]
+        },
+        "data": {
+          "type": "object",
+          "required": ["employeeCount"],
+          "additionalProperties": false,
+          "properties": {
+            "employeeCount": {
+              "type": ["integer", "null"],
+              "minimum": 0
+            },
+            "fundingTotalUsd": {
+              "type": ["number", "null"],
+              "minimum": 0
+            },
+            "lastFundingStage": {
+              "type": ["string", "null"]
+            },
+            "industries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "collectedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

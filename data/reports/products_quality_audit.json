@@ -1,0 +1,27 @@
+{
+  "timestamp": "2026-09-11T18:20:12.167610Z",
+  "identity_quality": {
+    "total_product_rows": 1051,
+    "total_production_records": 1051,
+    "test_legacy_records_excluded": 0,
+    "unique_source_urls": 1051,
+    "duplicate_source_urls": 0,
+    "missing_source_urls": 0,
+    "invalid_source_url_formats": 0
+  },
+  "metadata_completeness": {
+    "missing_product_name": 0,
+    "missing_startup_name": 0,
+    "pricing_model_breakdown": {
+      "FREEMIUM": 1,
+      "FREE": 1050
+    },
+    "descriptions_populated": 1051,
+    "categories_populated": 1051,
+    "launch_dates_populated": 1050
+  },
+  "source_breakdown": {
+    "ProductHunt": 1,
+    "GitHub Repositories": 1050
+  }
+}

@@ -1,0 +1,352 @@
+{
+  "HuggingFaceDailyPapers": {
+    "source_name": "HuggingFaceDailyPapers",
+    "access_method": "JSON API (https://huggingface.co/api/daily_papers)",
+    "discovery_url": "https://huggingface.co/api/daily_papers",
+    "http_status": 200,
+    "accessible": true,
+    "discovered_count": 15,
+    "sample_articles": [
+      {
+        "url": "https://huggingface.co/papers/2609.10745",
+        "fetch_status": 200,
+        "pub_date_raw": "2026-09-11T00:00:00.000Z",
+        "pub_date_parsed": "2026-09-11T00:00:00Z",
+        "freshness_status": "FRESH",
+        "age_hours": 18.78,
+        "title": "Think Before You Link: Rarity, Reasoning, and Retrieval in Multilingual Entity Linking",
+        "full_text_length": 7124,
+        "ai_relevant": true
+      },
+      {
+        "url": "https://huggingface.co/papers/2609.10445",
+        "fetch_status": 200,
+        "pub_date_raw": "2026-09-11T00:00:00.000Z",
+        "pub_date_parsed": "2026-09-11T00:00:00Z",
+        "freshness_status": "FRESH",
+        "age_hours": 18.78,
+        "title": "Building Multilingual Bridges: Data Mixing as the Pillar of Generalization for In-Language Reasoning",
+        "full_text_length": 6384,
+        "ai_relevant": true
+      },
+      {
+        "url": "https://huggingface.co/papers/2608.15380",
+        "fetch_status": 200,
+        "pub_date_raw": "2026-09-11T00:00:00.000Z",
+        "pub_date_parsed": "2026-09-11T00:00:00Z",
+        "freshness_status": "FRESH",
+        "age_hours": 18.78,
+        "title": "Adaptive Bridge: A Proxy-Based Decoupling Layer for Mitigating DDS Backpressure in ROS 2",
+        "full_text_length": 5003,
+        "ai_relevant": true
+      },
+      {
+        "url": "https://huggingface.co/papers/2609.11085",
+        "fetch_status": 200,
+        "pub_date_raw": "2026-09-11T00:00:00.000Z",
+        "pub_date_parsed": "2026-09-11T00:00:00Z",
+        "freshness_status": "FRESH",
+        "age_hours": 18.78,
+        "title": "Beyond Solver Verdicts: Generative Reward Models for Autoformalization",
+        "full_text_length": 7432,
+        "ai_relevant": true
+      },
+      {
+        "url": "https://huggingface.co/papers/2609.09076",
+        "fetch_status": 200,
+        "pub_date_raw": "2026-09-11T00:00:00.000Z",
+        "pub_date_parsed": "2026-09-11T00:00:00Z",
+        "freshness_status": "FRESH",
+        "age_hours": 18.78,
+        "title": "ActReview: Rebuttal-Guided Training Data and Rubric Rewards for Actionable Peer Review Generation",
+        "full_text_length": 6652,
+        "ai_relevant": true
+      }
+    ],
+    "status": "LIVE_VERIFIED",
+    "fresh_count_sample": 5,
+    "stale_count_sample": 0,
+    "unknown_count_sample": 0,
+    "full_text_count_sample": 5
+  },
+  "TechCrunchAI": {
+    "source_name": "TechCrunchAI",
+    "access_method": "RSS XML Feed",
+    "discovery_url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+    "http_status": 200,
+    "accessible": true,
+    "discovered_count": 15,
+    "sample_articles": [
+      {
+        "url": "https://techcrunch.com/podcast/an-anthropic-researchers-doomsday-warning-comes-at-a-very-interesting-time/",
+        "fetch_status": 200,
+        "pub_date_raw": null,
+        "pub_date_parsed": null,
+        "freshness_status": "UNKNOWN",
+        "age_hours": null,
+        "title": "An Anthropic researcher\u2019s doomsday warning comes at\u00a0a very interesting\u00a0time",
+        "full_text_length": 6218,
+        "ai_relevant": true
+      },
+      {
+        "url": "https://techcrunch.com/2026/09/11/nscale-adds-former-openai-exec-fidji-simo-to-its-board-ahead-of-potential-ipo/",
+        "fetch_status": 200,
+        "pub_date_raw": "2026-09-11T16:46:25+00:00",
+        "pub_date_parsed": "2026-09-11T16:46:25Z",
+        "freshness_status": "FRESH",
+        "age_hours": 2.01,
+        "title": "Nscale adds former OpenAI exec Fidji Simo to its board ahead of potential IPO | TechCrunch",
+        "full_text_length": 3374,
+        "ai_relevant": true
+      },
+      {
+        "url": "https://techcrunch.com/2026/09/10/jensen-huang-explains-why-nvidia-will-grow-an-astounding-70-next-year/",
+        "fetch_status": 200,
+        "pub_date_raw": "2026-09-10T21:51:59+00:00",
+        "pub_date_parsed": "2026-09-10T21:51:59Z",
+        "freshness_status": "FRESH",
+        "age_hours": 20.91,
+        "title": "Jensen Huang explains why Nvidia will grow an astounding 70% next year | TechCrunch",
+        "full_text_length": 6206,
+        "ai_relevant": true
+      },
+      {
+        "url": "https://techcrunch.com/2026/09/10/mark-wahlberg-is-coming-to-techcrunch-disrupt-2026/",
+        "fetch_status": 200,
+        "pub_date_raw": "2026-09-10T21:35:00+00:00",
+        "pub_date_parsed": "2026-09-10T21:35:00Z",
+        "freshness_status": "FRESH",
+        "age_hours": 21.2,
+        "title": "Mark Wahlberg is coming to TechCrunch Disrupt 2026 | TechCrunch",
+        "full_text_length": 4850,
+        "ai_relevant": true
+      },
+      {
+        "url": "https://techcrunch.com/2026/09/10/openai-puts-pro-subscriptions-on-hold-due-to-astra-demand/",
+        "fetch_status": 200,
+        "pub_date_raw": "2026-09-10T20:59:51+00:00",
+        "pub_date_parsed": "2026-09-10T20:59:51Z",
+        "freshness_status": "FRESH",
+        "age_hours": 21.78,
+        "title": "OpenAI puts Pro subscriptions on hold due to Astra demand | TechCrunch",
+        "full_text_length": 3717,
+        "ai_relevant": true
+      }
+    ],
+    "status": "LIVE_VERIFIED",
+    "fresh_count_sample": 4,
+    "stale_count_sample": 0,
+    "unknown_count_sample": 1,
+    "full_text_count_sample": 5
+  },
+  "MITTechReviewAI": {
+    "source_name": "MITTechReviewAI",
+    "access_method": "RSS XML Feed",
+    "discovery_url": "https://www.technologyreview.com/topic/artificial-intelligence/feed",
+    "http_status": 200,
+    "accessible": true,
+    "discovered_count": 10,
+    "sample_articles": [
+      {
+        "url": "https://www.technologyreview.com/2026/09/10/1141649/powering-ai-is-an-architecture-problem/",
+        "fetch_status": 200,
+        "pub_date_raw": "2026-09-10T07:00:00-04:00",
+        "pub_date_parsed": "2026-09-10T11:00:00Z",
+        "freshness_status": "STALE",
+        "age_hours": 31.78,
+        "title": "Powering AI is an architecture problem",
+        "full_text_length": 8045,
+        "ai_relevant": true
+      },
+      {
+        "url": "https://www.technologyreview.com/2026/09/08/1143747/what-openais-latest-controversy-tells-us-about-the-future-of-math/",
+        "fetch_status": 200,
+        "pub_date_raw": "2026-09-08T23:10:08-04:00",
+        "pub_date_parsed": "2026-09-09T03:10:08Z",
+        "freshness_status": "STALE",
+        "age_hours": 63.61,
+        "title": "What OpenAI\u2019s latest controversy tells us about the future of math",
+        "full_text_length": 10279,
+        "ai_relevant": true
+      },
+      {
+        "url": "https://www.technologyreview.com/2026/09/08/1142088/danijar-hafner-developing-plan-ahead-agents/",
+        "fetch_status": 200,
+        "pub_date_raw": "2026-09-08T06:34:00-04:00",
+        "pub_date_parsed": "2026-09-08T10:34:00Z",
+        "freshness_status": "STALE",
+        "age_hours": 80.21,
+        "title": "This AI entrepreneur is developing agents that can plan ahead for the unexpected",
+        "full_text_length": 6416,
+        "ai_relevant": true
+      },
+      {
+        "url": "https://www.technologyreview.com/2026/09/04/1140872/architecting-memory-and-storage-in-the-ai-era/",
+        "fetch_status": 200,
+        "pub_date_raw": "2026-09-04T14:39:19-04:00",
+        "pub_date_parsed": "2026-09-04T18:39:19Z",
+        "freshness_status": "STALE",
+        "age_hours": 168.12,
+        "title": "Architecting memory and storage in the AI era",
+        "full_text_length": 11044,
+        "ai_relevant": true
+      },
+      {
+        "url": "https://www.technologyreview.com/2026/09/04/1143452/drone-data-wild-west/",
+        "fetch_status": 200,
+        "pub_date_raw": "2026-09-04T05:25:19-04:00",
+        "pub_date_parsed": "2026-09-04T09:25:19Z",
+        "freshness_status": "STALE",
+        "age_hours": 177.36,
+        "title": "Data from drones in Ukraine is fueling a new Wild West marketplace",
+        "full_text_length": 10809,
+        "ai_relevant": true
+      }
+    ],
+    "status": "LIVE_VERIFIED",
+    "fresh_count_sample": 0,
+    "stale_count_sample": 5,
+    "unknown_count_sample": 0,
+    "full_text_count_sample": 5
+  },
+  "OpenAIBlog": {
+    "source_name": "OpenAIBlog",
+    "access_method": "RSS XML Feed",
+    "discovery_url": "https://openai.com/news/rss.xml",
+    "http_status": 200,
+    "accessible": true,
+    "discovered_count": 15,
+    "sample_articles": [
+      {
+        "url": "https://openai.com/index/scaling-storage-one-billion-users-part-one",
+        "fetch_status": 403,
+        "pub_date_raw": null,
+        "pub_date_parsed": null,
+        "freshness_status": null,
+        "age_hours": null,
+        "title": null,
+        "full_text_length": 0,
+        "ai_relevant": true
+      },
+      {
+        "url": "https://openai.com/index/using-codex-chatgpt-to-search-for-new-antimicrobials",
+        "fetch_status": 403,
+        "pub_date_raw": null,
+        "pub_date_parsed": null,
+        "freshness_status": null,
+        "age_hours": null,
+        "title": null,
+        "full_text_length": 0,
+        "ai_relevant": true
+      },
+      {
+        "url": "https://openai.com/index/put-data-to-work",
+        "fetch_status": 403,
+        "pub_date_raw": null,
+        "pub_date_parsed": null,
+        "freshness_status": null,
+        "age_hours": null,
+        "title": null,
+        "full_text_length": 0,
+        "ai_relevant": true
+      },
+      {
+        "url": "https://openai.com/index/introducing-chatgpt-financial-services",
+        "fetch_status": 403,
+        "pub_date_raw": null,
+        "pub_date_parsed": null,
+        "freshness_status": null,
+        "age_hours": null,
+        "title": null,
+        "full_text_length": 0,
+        "ai_relevant": true
+      },
+      {
+        "url": "https://openai.com/index/expanding-ai-access-us-government",
+        "fetch_status": 403,
+        "pub_date_raw": null,
+        "pub_date_parsed": null,
+        "freshness_status": null,
+        "age_hours": null,
+        "title": null,
+        "full_text_length": 0,
+        "ai_relevant": true
+      }
+    ],
+    "status": "PARTIALLY_LIVE_VERIFIED",
+    "fresh_count_sample": 0,
+    "stale_count_sample": 0,
+    "unknown_count_sample": 0,
+    "full_text_count_sample": 0
+  },
+  "HackerNewsAI": {
+    "source_name": "HackerNewsAI",
+    "access_method": "Firebase JSON API",
+    "discovery_url": "https://hacker-news.firebaseio.com/v0/topstories.json",
+    "http_status": 200,
+    "accessible": true,
+    "discovered_count": 7,
+    "sample_articles": [
+      {
+        "url": "https://terrytao.wordpress.com/2026/09/11/a-severe-misalignment-of-ai-in-mathematics/",
+        "fetch_status": 200,
+        "pub_date_raw": "2026-09-11T17:27:46+00:00",
+        "pub_date_parsed": "2026-09-11T17:27:46Z",
+        "freshness_status": "FRESH",
+        "age_hours": 1.32,
+        "title": "A Severe Misalignment of AI in Mathematics",
+        "full_text_length": 6704,
+        "ai_relevant": true
+      },
+      {
+        "url": "https://www.economist.com/science-and-technology/2026/09/11/top-mathematicians-are-outraged-by-openais-methods",
+        "fetch_status": 403,
+        "pub_date_raw": null,
+        "pub_date_parsed": null,
+        "freshness_status": null,
+        "age_hours": null,
+        "title": null,
+        "full_text_length": 0,
+        "ai_relevant": true
+      },
+      {
+        "url": "https://github.com/kennethwolters/litelm",
+        "fetch_status": 200,
+        "pub_date_raw": null,
+        "pub_date_parsed": null,
+        "freshness_status": "UNKNOWN",
+        "age_hours": null,
+        "title": "GitHub - kennethwolters/litelm: litellm without the bloat",
+        "full_text_length": 2329,
+        "ai_relevant": true
+      },
+      {
+        "url": "https://www.getzep.com/careers/",
+        "fetch_status": 200,
+        "pub_date_raw": null,
+        "pub_date_parsed": null,
+        "freshness_status": "UNKNOWN",
+        "age_hours": null,
+        "title": "Careers | Zep",
+        "full_text_length": 31971,
+        "ai_relevant": true
+      },
+      {
+        "url": "https://www.cia.gov/stories/story/cia-releases-presidents-daily-briefs-in-commemoration-of-the-25th-anniversary-of-9-11/seventy-one-declassified-presidents-daily-brief-products/",
+        "fetch_status": 200,
+        "pub_date_raw": null,
+        "pub_date_parsed": null,
+        "freshness_status": "UNKNOWN",
+        "age_hours": null,
+        "title": "71 Declassified 9/11 related President's Daily Brief products - CIA",
+        "full_text_length": 13104,
+        "ai_relevant": true
+      }
+    ],
+    "status": "LIVE_VERIFIED",
+    "fresh_count_sample": 1,
+    "stale_count_sample": 0,
+    "unknown_count_sample": 3,
+    "full_text_count_sample": 4
+  }
+}
