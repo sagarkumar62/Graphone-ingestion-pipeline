@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "generated_at": "2026-09-12T08:04:44Z",
-    "record_count": 1008,
+    "generated_at": "2026-09-12T12:03:43Z",
+    "record_count": 1009,
     "schema_version": "1.0",
     "source_coverage": [
       "arXiv"
@@ -24412,6 +24412,30 @@
       "enrichment_status": "PENDING",
       "published_date": "2017-06-12T00:00:00Z",
       "collected_at": "2026-09-11T18:39:15Z"
+    },
+    {
+      "id": 1098,
+      "arxiv_id": null,
+      "source_name": "ArXiv",
+      "source_url": "https://arxiv.org/abs/1706.03764",
+      "title": "The Interstellar Medium and Star Formation of Galactic Disks. I. ISM and GMC properties with Diffuse FUV and Cosmic Ray Backgrounds",
+      "normalized_title": null,
+      "authors": [
+        "Li, Qi",
+        "Tan, Jonathan C.",
+        "Christie, Duncan",
+        "Bisbas, Thomas G.",
+        "Wu, Benjamin"
+      ],
+      "paper_url": "https://arxiv.org/abs/1706.03764",
+      "github_url": null,
+      "github_stars": null,
+      "primary_category": "cs.AI",
+      "abstract": "We present a series of adaptive mesh refinement (AMR) hydrodynamic simulations of flat rotation curve galactic gas disks with a detailed treatment of the interstellar medium (ISM) physics of the atomic to molecular phase transition under the influence of diffuse FUV radiation fields and cosmic ray backgrounds. We explore the effects of different FUV intensities, including a model with a radial gradient designed to mimic the Milky Way. The effects of cosmic rays, including radial gradients in their heating and ionization rates, are also explored. The final simulations in this series achieve $4\\:$pc resolution across the $\\sim20\\:$kpc global disk diameter, with heating and cooling followed down to temperatures of $\\sim10\\:$K. The disks are evolved for $300\\:$Myr, which is enough time for the ISM to achieve a quasi-statistical equilibrium. In particular, the mass fraction of molecular gas stabilizes by $\\sim$200 Myr. Additional global ISM properties are analysed. Giant molecular clouds (GMCs) are also identified and the statistical properties of their populations examined. GMCs are tracked as the disks evolve. GMC collisions, which may be a means of triggering star cluster formation, are counted and the rates compared with analytic models. Relatively frequent GMC collision rates are seen in these simulations and their implications for understanding GMC properties, including the driving of internal turbulence, are discussed.",
+      "content_hash": null,
+      "enrichment_status": "PENDING",
+      "published_date": "2017-06-12T00:00:00Z",
+      "collected_at": "2026-09-12T11:57:44Z"
     }
   ]
 }

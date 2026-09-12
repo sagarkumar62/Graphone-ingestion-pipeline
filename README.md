@@ -77,7 +77,8 @@ src/
     └── time.py             # ISO-8601 formatting & relative date parsing
 
 scripts/
-└── export_sheets.py        # Data exporter for 6 canonical tabs (CSV/JSON & Sheets)
+├── export_sheets.py        # Data exporter for 6 canonical tabs (CSV/JSON)
+└── publish_to_google_sheets.py # Google Sheets publisher script
 
 docs/                       # Architecture & design specifications
 schemas/                    # Canonical JSON Schemas (6 schemas)
@@ -162,14 +163,20 @@ The pipeline relies on `pydantic-settings` to load configuration from environmen
 | `LLM_SECONDARY_MODEL` | No | Secondary LLM model identifier (**LIVE VERIFIED**) | `groq/compound` |
 | `LLM_TERTIARY_PROVIDER` | No | Tier 3 Tertiary LLM provider adapter name | `DeepSeek` |
 | `LLM_TERTIARY_MODEL` | No | Tertiary LLM model identifier (**CONFIGURED / NOT LIVE VERIFIED**) | `deepseek-chat` |
-| `GEMINI_API_KEY` | Optional | API key for Google Gemini (Tier 1 Primary). If unconfigured, falls back to DOM/API parsing. | `your_gemini_api_key_here` |
-| `GROQ_API_KEY` | Optional | API key for Groq (Tier 2 Secondary). If unconfigured, falls back to DOM/API parsing. | `your_groq_api_key_here` |
-| `DEEPSEEK_API_KEY` | Optional | API key for DeepSeek (Tier 3 Tertiary). If unconfigured, falls back to DOM/API parsing. | `your_deepseek_api_key_here` |
+| `GEMINI_API_KEY` | Optional | API key for Google Gemini (Tier 1 Primary). | `your_gemini_api_key_here` |
+| `GROQ_API_KEY` | Optional | API key for Groq (Tier 2 Secondary). | `your_groq_api_key_here` |
+| `DEEPSEEK_API_KEY` | Optional | API key for DeepSeek (Tier 3 Tertiary). | `your_deepseek_api_key_here` |
 | `GITHUB_TOKEN` | Optional | GitHub Personal Access Token for authentic repository star count fetching without rate limits. | `your_github_token_here` |
 | `GOOGLE_SHEETS_CREDENTIALS` | Optional | Relative file path to Google Cloud Service Account JSON credentials for export publishing. | `./credentials/google_service_account.json` |
 | `GOOGLE_SHEET_ID` | Optional | Target Google Sheet ID string from spreadsheet URL for automated publishing. | `your_google_sheet_id_here` |
 
-*(Note: If LLM API keys are unconfigured, the pipeline operates deterministically using rule-based DOM/API parsing and graceful fallbacks).*
+> [!NOTE]
+> **LLM Provider & Fallback Behavior:**
+> - **Gemini 2.5 Flash $\rightarrow$ Groq compound $\rightarrow$ DeepSeek** is the configured fallback chain.
+> - **Gemini 2.5 Flash** and **Groq compound** are **LIVE VERIFIED**.
+> - **DeepSeek** is **CONFIGURED / NOT LIVE VERIFIED**.
+> - If all configured LLM providers fail, the record follows the failure/DLQ path.
+> - Deterministic source-specific parsing exists only where explicitly implemented, such as the ArXiv parser.
 
 ---
 
@@ -182,15 +189,21 @@ Google Sheets serves as an **export and publishing integration layer** for deliv
 2. **Spreadsheet Access:** Open your target Google Sheet in a browser and share it with the service account's `client_email` (found inside your JSON key file), granting **Editor** permissions.
 3. **Spreadsheet ID:** Copy the unique ID string from the spreadsheet URL (`https://docs.google.com/spreadsheets/d/<GOOGLE_SHEET_ID>/edit`) and set `GOOGLE_SHEET_ID` in `.env`.
 
-#### Export & Dry-Run Execution
-The exporter script [`scripts/export_sheets.py`](file:///c:/Users/hp/OneDrive/Documents/Desktop/graphone-ingestion-pipeline/scripts/export_sheets.py) dumps canonical database entities into clean CSV, JSON, and JSONL formats inside `data/exports/`:
+#### Export & Publishing Execution
+The exporter script [`scripts/export_sheets.py`](file:///c:/Users/hp/OneDrive/Documents/Desktop/graphone-ingestion-pipeline/scripts/export_sheets.py) dumps canonical database entities into clean CSV, JSON, and JSONL formats inside `data/exports/`. The Google Sheets publisher script publishes these datasets directly to your target spreadsheet:
 
 ```powershell
-# Export all 6 canonical tabs to local CSV/JSON files (Dry-Run / Local Verification)
+# Export all 6 canonical tabs to local CSV/JSON files
 python scripts/export_sheets.py
 
 # Export startups tab only
 python scripts/export_sheets.py --startups-only
+
+# Dry-run Google Sheets publishing
+python scripts/publish_to_google_sheets.py --dry-run
+
+# Actual Google Sheets publishing
+python scripts/publish_to_google_sheets.py
 ```
 
 #### Verification of Published Tabs
@@ -207,11 +220,7 @@ The exporter produces files corresponding to the 6 canonical Google Sheets deliv
 ## 🧪 Running the Pipeline & Verification Commands
 
 ### Environment Verification & Full Test Suite
-Run the automated test suite across unit and integration specs:
-```powershell
-python -m pytest tests/ -v --tb=short
-```
-*Current test suite result: **123 passed, 1 skipped, 3 warnings in ~36s** (`pytest tests/`).*
+Run `python -m pytest tests/ -v --tb=short` to obtain the current test result.
 
 ### Run Vertical Slice Execution CLI
 Executes end-to-end crawling, extraction, entity resolution, and SQLite storage for a single vertical slice:
@@ -223,6 +232,18 @@ python main.py
 Executes asynchronous batch ingestion for arXiv papers and fresh AI news feeds:
 ```powershell
 python -m src.pipeline.batch_processor
+```
+
+### Run Google Sheets Export & Publishing
+```powershell
+# Local export to data/exports/
+python scripts/export_sheets.py
+
+# Dry-run Google Sheets publishing
+python scripts/publish_to_google_sheets.py --dry-run
+
+# Actual Google Sheets publishing
+python scripts/publish_to_google_sheets.py
 ```
 
 ---
@@ -242,14 +263,14 @@ python -m src.pipeline.batch_processor
 ### 1. Dataset Status & Provenance
 - **Startups (1,134 records exported):** 1,134 production startup/company candidates with legitimate source provenance. YC explicitly establishes startup status for the YC record; GitHub organization evidence establishes authentic technology-company/software-entity evidence but does not universally establish funding stage or venture-backed startup status. In a deterministic adversarial audit of 151 sampled records, 151/151 were defensible, 0 were false positives, 0 were fabricated, and 0 were synthetic.
 - **Products (1,501 records exported):** 1,501 production records with valid provenance and GitHub repository metrics.
-- **Research Papers (1,009 records exported):** 1,009 production records from arXiv and Papers with Code with authentic GitHub repository links and star counts.
+- **Research Papers (1,008 records exported):** 1,008 production records from arXiv and Papers with Code with authentic GitHub repository links and star counts.
 - **Jobs (683 fresh records exported / 1,275 DB total):** Exactly 24-hour freshness enforced. 683 fresh jobs included in final deliverable export; 592 stale/rejected postings excluded.
 - **News (14 fresh records exported / 28 DB total):** 5 AI news sources monitored:
   - *Clearly Qualifies:* TechCrunch AI, MIT Technology Review AI, OpenAI Blog
   - *Borderline:* Hugging Face Daily Papers, Hacker News AI
   - *OpenAI Blog Note:* RSS feed accessible; article detail GET encounters Cloudflare HTTP 403 (no anti-bot bypass mechanisms used).
   - *Requirement Status:* **PARTIAL PASS** under strict interpretation of 5 dedicated AI news sources.
-- **Entity Mappings (865 records exported):** Deterministic canonical resolution log with seed dictionary and confidence thresholds.
+- **Entity Mappings (870 records exported):** Deterministic canonical resolution log with seed dictionary and confidence thresholds.
 
 ### 2. Multi-Tier LLM Orchestration & Provider Verification
 - **Tier 1:** Gemini 2.5 Flash (`gemini-2.5-flash`) — **LIVE VERIFIED**
@@ -263,4 +284,4 @@ python -m src.pipeline.batch_processor
 - **Capacity Model:** All 500,000+ records/day throughput figures are explicitly designated as **ASSUMPTIONS / DESIGN CAPACITY** (theoretical capacity model, not measured production throughput).
 
 ### 4. Automated Test Suite Status
-- **123 passed, 1 skipped, 3 warnings in ~36s** (`pytest tests/`).
+Run `python -m pytest tests/ -v --tb=short` to obtain the current test result.
