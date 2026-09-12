@@ -1,19 +1,19 @@
 # GraphOne / FrontierAtlas AI Engineer Ingestion Pipeline
 
-Production-grade, asynchronous, fault-tolerant AI & Data Ingestion Pipeline for startups, products, research papers (with GitHub metrics), 24-hr fresh jobs, and news signals.
+Production-oriented, asynchronous, fault-tolerant AI & Data Ingestion Pipeline for startups, products, research papers (with GitHub metrics), 24-hr fresh jobs, and news signals.
 
 ---
 
 ## 📌 Executive Summary & Assessment Scope
 GraphOne / FrontierAtlas requires an enterprise ingestion graph spanning startups, products, research papers (with GitHub metrics), 24-hr fresh jobs, and real-time news signals.
 
-This repository implements the complete end-to-end technical pipeline architecture:
+This repository implements the core ingestion pipeline and documents the complete production-scale architecture, with local/demo infrastructure clearly separated from production design:
 - **Phase I Bulk Extraction:** Asynchronous scraping engine with rate limiting and checkpointing for large directories.
 - **Phase II High-Fidelity Signal Ingestion:** Live crawl adapters for AI news and AI job boards with strict 24-hour freshness gating based solely on source publication timestamps.
 - **Phase III Multi-Tier LLM Orchestration:** Fallback chain (**Gemini 2.5 Flash &rarr; Groq compound &rarr; DeepSeek**) with HTTP 413 structural chunking and HTTP 429 full jitter exponential backoff.
 - **Phase IV Deterministic Entity Resolution:** Multi-stage canonical normalization (Unicode NFKC, legal suffix removal, seed dictionary, composite evidence) preventing false-positive merges.
 - **Phase V Asynchronous Crawlers & Anti-Bot Strategy:** Async HTTP (`httpx`) and headless browser (`Playwright Async`) with circuit breakers and Cloudflare classification.
-- **Phase VI Scalable Production Architecture:** Comprehensive 500,000+ records/day architecture based on **Apache Kafka** as the primary production queue, documented in `docs/ARCHITECTURE.pdf`.
+- **Phase VI Scalable Production Architecture:** Comprehensive 500,000+ records/day architecture based on **Apache Kafka** as the primary production queue, documented in [`docs/ARCHITECTURE.pdf`](docs/ARCHITECTURE.pdf).
 
 ---
 
@@ -26,9 +26,9 @@ This repository implements the complete end-to-end technical pipeline architectu
 - **Entity Resolution:** Deterministic multi-stage normalization (Unicode NFKC, legal suffix removal, seed dictionary, composite evidence matching)
 - **Storage Strategy:**
   - **IMPLEMENTED (Demo/Local):** SQLite (`pipeline.db`) via `aiosqlite` with atomic upsert primitives and local raw staging (`./data/raw/`).
-  - **DESIGNED FOR PRODUCTION (Not Deployed):** Managed PostgreSQL, pgvector / Qdrant, Neo4j property graph, and AWS S3 object storage.
+  - **DESIGNED FOR PRODUCTION SCALE (Not Deployed):** Managed PostgreSQL, pgvector / Qdrant, Neo4j property graph, and AWS S3 object storage.
   - **OPTIONAL / PLANNED:** Redis Sentinel/Cluster for distributed rate limiting and atomic claim locking.
-- **Primary Queue:** **Apache Kafka** (DESIGNED production queue for partition-level ordering, replayable logs, and backpressure).
+- **Primary Queue:** **Apache Kafka** (DESIGNED production queue for partition-level ordering, replayable logs, and backpressure; NOT DEPLOYED locally).
 
 ---
 
@@ -139,13 +139,13 @@ cp .env.example .env
 > - Fill only the credentials and configuration variables required for your environment.
 > - **NEVER commit `.env`** to source control (enforced via `.gitignore`).
 > - **NEVER commit Google Cloud Service Account JSON credentials** (`credentials.json`).
-> - `.env.example` is the source of truth for configuration keys and must only contain safe, placeholder values.
+> - [`.env.example`](.env.example) is the source of truth for configuration keys and must only contain safe, placeholder values.
 
 ---
 
 ### 3. Environment Variable Reference
 
-The pipeline relies on `pydantic-settings` to load configuration from environment variables or `.env`. Below is the complete reference table corresponding 1-to-1 with [`.env.example`](file:///c:/Users/hp/OneDrive/Documents/Desktop/graphone-ingestion-pipeline/.env.example):
+The pipeline relies on `pydantic-settings` to load configuration from environment variables or `.env`. Below is the complete reference table corresponding 1-to-1 with [`.env.example`](.env.example):
 
 | Variable | Required? | Purpose | Example / Allowed Value |
 |----------|-----------|---------|-------------------------|
@@ -182,15 +182,15 @@ The pipeline relies on `pydantic-settings` to load configuration from environmen
 
 ### 4. Google Sheets Export & Publishing Integration
 
-Google Sheets serves as an **export and publishing integration layer** for delivering cleaned canonical datasets to stakeholders. It is **not** used as a primary application database or runtime storage engine.
+Google Sheets serves as an **export and publishing integration layer** for delivering cleaned canonical datasets to stakeholders. It is **not** used as a primary application database, runtime storage engine, or production queue. The production event stream queue remains **Apache Kafka** (`DESIGNED FOR PRODUCTION SCALE / NOT DEPLOYED`).
 
 #### Configuration & Service Account Setup
-1. **Credentials File Path:** Set `GOOGLE_SHEETS_CREDENTIALS` in `.env` to the path of your Google Cloud Service Account key file (e.g. `credentials/google_service_account.json`). Do not commit this file to git.
+1. **Credentials File Path:** Set `GOOGLE_SHEETS_CREDENTIALS` in `.env` to the path of your Google Cloud Service Account key file (e.g. `credentials/google_service_account.json`). Credentials must **never** be committed to source control.
 2. **Spreadsheet Access:** Open your target Google Sheet in a browser and share it with the service account's `client_email` (found inside your JSON key file), granting **Editor** permissions.
 3. **Spreadsheet ID:** Copy the unique ID string from the spreadsheet URL (`https://docs.google.com/spreadsheets/d/<GOOGLE_SHEET_ID>/edit`) and set `GOOGLE_SHEET_ID` in `.env`.
 
-#### Export & Publishing Execution
-The exporter script [`scripts/export_sheets.py`](file:///c:/Users/hp/OneDrive/Documents/Desktop/graphone-ingestion-pipeline/scripts/export_sheets.py) dumps canonical database entities into clean CSV, JSON, and JSONL formats inside `data/exports/`. The Google Sheets publisher script publishes these datasets directly to your target spreadsheet:
+#### Export & Publishing Commands
+The exporter script [`scripts/export_sheets.py`](scripts/export_sheets.py) dumps canonical database entities into clean CSV, JSON, and JSONL formats inside `data/exports/`. The Google Sheets publisher script publishes these datasets directly to your target spreadsheet:
 
 ```powershell
 # Export all 6 canonical tabs to local CSV/JSON files
@@ -206,14 +206,18 @@ python scripts/publish_to_google_sheets.py --dry-run
 python scripts/publish_to_google_sheets.py
 ```
 
-#### Verification of Published Tabs
-The exporter produces files corresponding to the 6 canonical Google Sheets deliverable tabs:
-1. `Startups` (`data/exports/startups.csv`)
-2. `Products` (`data/exports/products.csv`)
-3. `Research Papers` (`data/exports/research_papers.csv`, `research_papers.json`, `research_papers.jsonl`)
-4. `Jobs` (`data/exports/jobs.csv` - strictly 24-hour fresh postings)
-5. `News` (`data/exports/news.csv` - strictly 24-hour fresh articles)
-6. `Entity Mapping Log` (`data/exports/entity_mappings.csv` - raw vs canonical mapping audit trail)
+#### Verified Google Sheets Publish
+The Google Sheets integration has been live-verified against the configured spreadsheet. The publisher successfully authenticated, validated the required tabs, and wrote the current exported datasets.
+
+The six published tabs are:
+- `Startups`
+- `Products`
+- `Research Papers`
+- `Jobs`
+- `News`
+- `Entity Mapping Log`
+
+The publisher output reports the exact row counts for each publish run.
 
 ---
 
@@ -270,7 +274,7 @@ python scripts/publish_to_google_sheets.py
   - *Borderline:* Hugging Face Daily Papers, Hacker News AI
   - *OpenAI Blog Note:* RSS feed accessible; article detail GET encounters Cloudflare HTTP 403 (no anti-bot bypass mechanisms used).
   - *Requirement Status:* **PARTIAL PASS** under strict interpretation of 5 dedicated AI news sources.
-- **Entity Mappings (870 records exported):** Deterministic canonical resolution log with seed dictionary and confidence thresholds.
+- **Entity Mappings (870 records exported):** Deterministic canonical resolution log with seed dictionary and confidence thresholds (verified directly from `data/exports/entity_mappings.csv`).
 
 ### 2. Multi-Tier LLM Orchestration & Provider Verification
 - **Tier 1:** Gemini 2.5 Flash (`gemini-2.5-flash`) — **LIVE VERIFIED**
@@ -280,8 +284,11 @@ python scripts/publish_to_google_sheets.py
 
 ### 3. Architecture & Infrastructure Classification
 - **IMPLEMENTED (Local Workspace / Demo):** SQLite (`pipeline.db`), local filesystem raw payload storage (`./data/raw/`), async HTTP/Playwright crawler engine, LLM orchestrator, deterministic entity resolver.
-- **DESIGNED FOR PRODUCTION SCALE (Not Deployed):** Managed PostgreSQL, **Apache Kafka** (PRIMARY event stream & queue architecture), Redis supporting infrastructure, pgvector / Qdrant vector storage, Neo4j property graph, AWS S3 / MinIO object storage, Kubernetes container deployment.
+- **DESIGNED FOR PRODUCTION SCALE (Not Deployed):** Managed PostgreSQL, **Apache Kafka** (PRIMARY event stream & queue architecture), Redis supporting infrastructure, pgvector / Qdrant vector storage, Neo4j property graph, AWS S3 / MinIO object storage, Kubernetes container deployment, distributed production workers.
 - **Capacity Model:** All 500,000+ records/day throughput figures are explicitly designated as **ASSUMPTIONS / DESIGN CAPACITY** (theoretical capacity model, not measured production throughput).
 
-### 4. Automated Test Suite Status
+### 4. Phase 5.1 Status
+- **PARTIAL PASS**
+
+### 5. Automated Test Suite Status
 Run `python -m pytest tests/ -v --tb=short` to obtain the current test result.
